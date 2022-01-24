@@ -1,6 +1,5 @@
 # pylint: disable=broad-except
 
-from random import randrange
 from typing import Optional
 import time
 
