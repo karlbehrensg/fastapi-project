@@ -1,6 +1,12 @@
+# pylint: disable=broad-except
+
 from random import randrange
 from typing import Optional
-from fastapi import FastAPI, Response, status, HTTPException
+import time
+
+import psycopg2
+from fastapi import FastAPI, HTTPException, Response, status
+from psycopg2.extras import RealDictCursor
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -11,6 +17,24 @@ class Post(BaseModel):
     content: str
     published: bool = True
     rating: Optional[int] = None
+
+
+while True:
+    try:
+        conn = psycopg2.connect(
+            host="localhost",
+            database="fastapi",
+            user="postgres",
+            password="postgres",
+            cursor_factory=RealDictCursor,
+        )
+        cursor = conn.cursor()
+        print("Database connection was successful")
+        break
+    except Exception as e:
+        print("Connection to database failed")
+        print(e)
+        time.sleep(3)
 
 
 my_posts = [
@@ -65,9 +89,6 @@ def get_post(post_id: int):
 
 @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(post_id: int):
-    # deleting post
-    # find the index in the array that has required ID
-    # my_posts.pop(index)
     index = find_index_post(post_id)
 
     if index is None:
