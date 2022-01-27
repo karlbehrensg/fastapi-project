@@ -1,12 +1,18 @@
-# pylint: disable=broad-except
+# pylint: disable=broad-except, invalid-name
 
 from typing import Optional
 import time
 
 import psycopg2
-from fastapi import FastAPI, HTTPException, Response, status
+from fastapi import FastAPI, HTTPException, Response, status, Depends
 from psycopg2.extras import RealDictCursor
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from . import models
+from .database import get_db, engine
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -15,7 +21,6 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True
-    rating: Optional[int] = None
 
 
 while True:
@@ -122,3 +127,8 @@ def update_post(post_id: int, post: Post):
         )
 
     return {"data": updated_post}
+
+
+@app.get("/sqlalchemy")
+def test_posts(db: Session = Depends(get_db)):
+    return {"data": "success"}
