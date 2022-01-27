@@ -85,22 +85,23 @@ def create_posts(post: Post, db: Session = Depends(get_db)):
 def get_post(post_id: int, db: Session = Depends(get_db)):
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     if post is None:
-        raise HTTPException(status_code=404, detail=f"Post with id {post_id} not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
+        )
     return {"data": post}
 
 
 @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(post_id: int):
-    cursor.execute(""" DELETE FROM posts WHERE id = %s RETURNING * """, (str(post_id),))
-    deleted_post = cursor.fetchone()
-    conn.commit()
-
-    if deleted_post is None:
+def delete_post(post_id: int, db: Session = Depends(get_db)):
+    post = db.query(models.Post).filter(models.Post.id == post_id)
+    if post.first() is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"post with id: {post_id} does not exist",
+            detail=f"Post with id {post_id} not found",
         )
-
+    post.delete(synchronize_session=False)
+    db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
