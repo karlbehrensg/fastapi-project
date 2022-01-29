@@ -116,7 +116,7 @@ def update_post(post_id: int, post: schemas.PostCreate, db: Session = Depends(ge
 @app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     # hash the password - user.passowd
-    user.password = utils.hash(user.password)
+    user.password = utils.hash_str(user.password)
     new_user = models.User(**user.dict())
     db.add(new_user)
     db.commit()
