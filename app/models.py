@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 from sqlalchemy import Column, Integer, String, Text, Boolean
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
@@ -16,5 +17,13 @@ class Post(Base):
         TIMESTAMP(timezone=True), nullable=False, server_default=text("NOW()")
     )
 
-    def __repr__(self):
-        return f"<Post(title='{self.title}')>"
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, nullable=False, unique=True)
+    hashed_password = Column(String, nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("NOW()")
+    )
