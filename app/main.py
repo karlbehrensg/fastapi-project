@@ -4,15 +4,12 @@ import time
 
 import psycopg2
 from fastapi import FastAPI, HTTPException, Response, status, Depends
-from passlib.context import CryptContext
 from psycopg2.extras import RealDictCursor
-from psycopg2.errors import UniqueViolation
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from . import models, schemas, utils
 from .database import get_db, engine
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -119,7 +116,7 @@ def update_post(post_id: int, post: schemas.PostCreate, db: Session = Depends(ge
 @app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     # hash the password - user.passowd
-    user.password = pwd_context.hash(user.password)
+    user.password = utils.hash(user.password)
     new_user = models.User(**user.dict())
     db.add(new_user)
     db.commit()
