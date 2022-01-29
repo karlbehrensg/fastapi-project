@@ -9,7 +9,7 @@ from .. import database, models, utils, schemas, oath2
 router = APIRouter(tags=["Authentication"])
 
 
-@router.post("/login")
+@router.post("/login", response_model=schemas.Token)
 def login(
     user_credentials: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(database.get_db),
@@ -22,13 +22,13 @@ def login(
 
     if user is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Incorrect email or password",
         )
 
     if not utils.verify_str(user_credentials.password, user.password):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Incorrect email or password",
         )
 
