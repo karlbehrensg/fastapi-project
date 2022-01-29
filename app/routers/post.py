@@ -1,4 +1,4 @@
-# pylint: disable=broad-except, invalid-name
+# pylint: disable=broad-except, invalid-name, unused-argument
 from typing import List
 
 from fastapi import HTTPException, Response, status, Depends, APIRouter

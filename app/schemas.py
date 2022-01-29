@@ -1,7 +1,7 @@
 # pylint: disable=too-few-public-methods
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
 from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 
 class PostBase(BaseModel):

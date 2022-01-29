@@ -1,4 +1,4 @@
-# pylint: disable=broad-except, invalid-name
+# pylint: disable=broad-except, invalid-name, unused-argument, unused-import
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
