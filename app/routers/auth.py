@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 
-from .. import database, models, utils, schemas
+from .. import database, models, utils, schemas, oath2
 
 
 router = APIRouter(tags=["Authentication"])
@@ -27,4 +27,6 @@ def login(user_credentials: schemas.UserLogin, db: Session = Depends(database.ge
             detail="Incorrect email or password",
         )
 
-    return {"access_token": "example token"}
+    access_token = oath2.create_access_token({"user_id": user.id})
+
+    return {"access_token": access_token, "token_type": "bearer"}
