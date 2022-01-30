@@ -1,5 +1,5 @@
 # pylint: disable=too-few-public-methods
-from sqlalchemy import Column, Integer, String, Text, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, Boolean
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
@@ -15,6 +15,9 @@ class Post(Base):
     published = Column(Boolean, nullable=False, server_default="TRUE")
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("NOW()")
+    )
+    owner_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
 
 
