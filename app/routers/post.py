@@ -1,5 +1,4 @@
 # pylint: disable=broad-except, invalid-name, unused-argument
-from pyexpat import model
 from typing import List
 
 from fastapi import HTTPException, Response, status, Depends, APIRouter
